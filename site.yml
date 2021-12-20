@@ -1,0 +1,33 @@
+---
+- name: register variables
+  include: include_vars.yml
+
+- name: Ready to deploy every servers
+  hosts: all
+  become: true
+  roles:
+    - docker
+    - common
+
+- name: deploy cache servers
+  hosts: cache-server
+  become: true
+  roles:
+    - nginx-cache
+    - tuning
+  tags:
+    - cache
+
+- name: deploy origin servers
+  hosts: origin-server
+  become: true
+  roles:
+    - nginx-origin
+  tags:
+    - origin
+  
+- name: deploy exporters
+  hosts: caches,origins
+  roles:
+    - node-exporter
+    - nginx-exporter

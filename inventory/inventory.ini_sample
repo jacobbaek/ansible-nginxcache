@@ -1,0 +1,32 @@
+[all]
+node1 ansible_host=192.168.100.100
+node2 ansible_host=192.168.100.101
+node3 ansible_host=192.168.100.102
+node4 ansible_host=192.168.100.103
+node5 ansible_host=192.168.100.104
+node6 ansible_host=192.168.100.105
+
+[visual-server]
+node1
+
+[monitoring-server]
+node2
+
+[monitoring-client]
+node3
+node4
+node5
+node6
+
+[logging-server]
+node2
+
+[logging-client]
+node3
+node4
+node5
+node6
+
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=/home/ubuntu/.ssh/public_key.pem

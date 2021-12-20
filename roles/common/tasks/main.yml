@@ -1,0 +1,8 @@
+---
+- name: install python3-docker
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python3-docker
+    - unzip

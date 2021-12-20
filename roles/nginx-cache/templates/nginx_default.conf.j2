@@ -1,0 +1,18 @@
+upstream origin-group {
+    server web:8080;
+    {% for host in cache_server_list %}
+    "server " + {{ hostvars[host].ansible_default_ipv4.address }}" + "{{ origin_listen_port}}",
+    {% endfor %}
+}
+server {
+    listen            {{ cache_listen_port }};
+    server_name       {{ cache_server_name }};
+
+    location / {
+        proxy_pass         http://origin-group;
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;          
+    }
+}

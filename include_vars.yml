@@ -1,0 +1,6 @@
+---
+- hosts: localhost:all
+  tasks:
+    - name: register cache-server group into variable
+      include_vars:
+        cache_server_list: "{{ groups['cache-server'] }}"

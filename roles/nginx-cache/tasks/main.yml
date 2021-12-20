@@ -1,0 +1,38 @@
+---
+- name: create /data directory
+  file:
+    path: /data
+    state: directory
+    mode: 755
+  become: true
+
+- name: create /data/nginx directory
+  file:
+    path: /data/nginx
+    state: directory
+    mode: 755
+  become: true
+
+- name: generate nginx.conf file
+  template:
+    src: nginx.conf.j2
+    dest: /data/nginx/nginx.conf
+
+- name: generate default.conf file
+  template:
+    src: nginx_default.conf.j2
+    dest: /data/nginx-origin/default.conf
+
+- name: deploy nginx for cache
+  community.docker.docker_container:
+    name: nginx
+    image: nginx:1.21.4
+    volumes:
+      - /data/nginx-origin/nginx.conf:/etc/nginx/nginx.conf
+      - /data/nginx-origin/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 3000:3000
+    restart_policy: always
+    state: started
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
