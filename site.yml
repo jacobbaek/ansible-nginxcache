@@ -27,7 +27,10 @@
     - origin
   
 - name: deploy exporters
-  hosts: caches,origins
+  hosts: cache-server,origin-server
+  become: true
   roles:
-    - node-exporter
-    - nginx-exporter
+    - node_exporter
+    - nginx_prometheus_exporter
+  tags:
+    - exporter

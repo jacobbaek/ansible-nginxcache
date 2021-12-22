@@ -1,0 +1,65 @@
+---
+- name: create node_exporter group
+  group:
+    name: "{{ node_exporter_grp }}"
+    gid: "{{ node_exporter_gid }}"
+    state: present
+
+- name: create node_exporter user
+  user:
+    name: "{{ node_exporter_user }}"
+    update_password: always
+    uid: "{{ node_exporter_uid }}"
+    group: "{{ node_exporter_grp }}"
+    shell: "/usr/sbin/nologin"
+    home: "{{ node_exporter_home }}"
+    comment: "node-exporter user"
+    password_lock: yes
+
+- name: Download node_exporter
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp/node_exporter.tar.gz
+
+- name: Unarchive node_exporter
+  unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: /tmp/
+
+- name: Create node_exporter directory
+  file:
+    path: "{{ node_exporter_home }}"
+    state: directory
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_grp }}"
+
+- name: Copy node_exporter into instance
+  copy:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+    dest: "{{ node_exporter_home }}/node_exporter"
+    mode: '0755'
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_grp }}"
+
+- name: Generate node_exporter service
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Start node_exporter daemon
+  systemd:
+    name: node_exporter
+    state: restarted
+    enabled: true
+
+- name: Remove node_exporter archive file
+  file:
+    path: /tmp/node_exporter.tar.gz
+    state: absent

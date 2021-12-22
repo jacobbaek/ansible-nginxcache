@@ -1,0 +1,9 @@
+# nginx_exporter_download_url is defined at the group_vars/all
+
+nginx_prometheus_exporter_gid: 2001
+nginx_prometheus_exporter_grp: nginx_prometheus_exporter
+nginx_prometheus_exporter_uid: 2001
+nginx_prometheus_exporter_user: nginx_prometheus_exporter
+
+nginx_stub_status_subpath: stub_status
+nginx_prometheus_exporter_home: /opt/nginx_prometheus_exporter

@@ -1,0 +1,66 @@
+---
+- name: create nginx_prometheus_exporter group
+  group:
+    name: "{{ nginx_prometheus_exporter_grp }}"
+    gid: "{{ nginx_prometheus_exporter_gid }}"
+    state: present
+
+- name: create nginx_prometheus_exporter user
+  user:
+    name: "{{ nginx_prometheus_exporter_user }}"
+    update_password: always
+    uid: "{{ nginx_prometheus_exporter_uid }}"
+    group: "{{ nginx_prometheus_exporter_grp }}"
+    shell: "/usr/sbin/nologin"
+    home: "{{ nginx_prometheus_exporter_home }}"
+    comment: "node-exporter user"
+    password_lock: yes
+
+- name: Download nginx_prometheus_exporter
+  get_url:
+    url: "{{ nginx_prometheus_exporter_download_url }}"
+    dest: /tmp/nginx_prometheus_exporter.tar.gz
+
+- name: Unarchive nginx_prometheus_exporter
+  unarchive:
+    src: /tmp/nginx_prometheus_exporter.tar.gz
+    dest: /tmp/
+
+- name: Create nginx_prometheus_exporter directory
+  file:
+    path: "{{ nginx_prometheus_exporter_home }}"
+    state: directory
+    owner: "{{ nginx_prometheus_exporter_user }}"
+    group: "{{ nginx_prometheus_exporter_grp }}"
+
+- name: Copy nginx_prometheus_exporter into instance
+  copy:
+    src: "/tmp/nginx-prometheus-exporter"
+    dest: "{{ nginx_prometheus_exporter_home }}/nginx-prometheus-exporter"
+    mode: 0755
+    owner: "{{ nginx_prometheus_exporter_user }}"
+    group: "{{ nginx_prometheus_exporter_grp }}"
+    remote_src: true
+
+- name: Generate nginx_prometheus_exporter service
+  template:
+    src: nginx-prometheus-exporter.service.j2
+    dest: /etc/systemd/system/nginx-prometheus-exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Start nginx-prometheus-exporter daemon
+  systemd:
+    name: nginx-prometheus-exporter
+    state: restarted
+    enabled: true
+
+- name: Remove nginx_prometheus_exporter archive file
+  file:
+    path: /tmp/nginx_prometheus_exporter.tar.gz
+    state: absent

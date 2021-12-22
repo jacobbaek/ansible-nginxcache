@@ -1,0 +1,29 @@
+[Unit]
+Description=Prometheus Node Exporter
+After=network-online.target
+StartLimitInterval=0
+
+[Service]
+Type=simple
+User={{ node_exporter_user }}
+Group={{ node_exporter_grp }}
+ExecStart={{ node_exporter_home }}/node_exporter \
+    --no-collector.hwmon \
+    --no-collector.infiniband \
+    --collector.systemd \
+    --collector.textfile \
+    --collector.textfile.directory=/var/lib/node_exporter \
+    --web.listen-address={{ ansible_host }}:{{ node_exporter_port }}
+
+SyslogIdentifier=node_exporter
+Restart=always
+RestartSec=1
+
+PrivateTmp=yes
+ProtectHome=yes
+NoNewPrivileges=yes
+
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

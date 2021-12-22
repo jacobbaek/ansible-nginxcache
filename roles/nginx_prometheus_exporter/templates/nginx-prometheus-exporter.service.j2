@@ -1,0 +1,13 @@
+[Unit]
+Description=Nginx Prometheus Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=nginx_prometheus_exporter
+Group=nginx_prometheus_exporter
+Type=simple
+ExecStart={{ nginx_prometheus_exporter_home }}/nginx-prometheus-exporter -nginx.scrape-uri http://{{ ansible_host }}/metrics -web.telemetry-path=/
+
+[Install]
+WantedBy=multi-user.target
