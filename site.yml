@@ -9,6 +9,14 @@
     - docker
     - common
 
+- name: deploy origin servers
+  hosts: origin-server
+  become: true
+  roles:
+    - nginx-origin
+  tags:
+    - origin
+
 - name: deploy cache servers
   hosts: cache-server
   become: true
@@ -17,20 +25,12 @@
     - tuning
   tags:
     - cache
-
-- name: deploy origin servers
-  hosts: origin-server
-  become: true
-  roles:
-    - nginx-origin
-  tags:
-    - origin
   
 - name: deploy exporters
   hosts: cache-server,origin-server
   become: true
   roles:
     - node_exporter
-    - nginx_prometheus_exporter
+    - nginx-prometheus-exporter
   tags:
     - exporter
