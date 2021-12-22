@@ -36,5 +36,8 @@
     restart_policy: always
     state: started
     restart: true
+    # "net.core.netdev_max_backlog" can be occurred error "no such file or directory". 
+    #sysctls: { "net.core.somaxconn":8192, "net.core.netdev_max_backlog":20480 }
+    sysctls: { "net.core.somaxconn":8192, "net.ipv4.tcp_tw_reuse":1, "net.ipv4.tcp_max_syn_backlog":8192 }
   vars:
     ansible_python_interpreter: /usr/bin/python3
