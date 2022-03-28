@@ -3,7 +3,7 @@ server {
     server_name       {{ origin_server_name }};
     
     location / {
-        root    /usr/share/nginx/html;
+        root    /var/www/{{ origin_domain }};
         index   index.html index.htm;
     }
 

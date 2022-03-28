@@ -1,6 +1,6 @@
 ---
 - name: register variables
-  include: include_vars.yml
+  import_playbook: include_vars.yml
 
 - name: Ready to deploy every servers
   hosts: all

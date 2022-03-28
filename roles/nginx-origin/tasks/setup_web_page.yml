@@ -1,0 +1,5 @@
+---
+- name: pull the source code.
+  ansible.builtin.git:
+    repo: https://github.com/jacobbaek/sampleweb.git
+    dest: /var/www/{{ origin_domain }}

@@ -1,37 +1,20 @@
 ---
-- name: create /data directory
-  file:
-    path: /data
-    state: directory
-    mode: 755
+- name: install origin server that used container on the CentOS.
+  include_tasks: based_container_on_centos.yml
+  when: g_container == true and ansible_facts['distribution'] == "CentOS"
 
-- name: create /data/nginx-origin directory
-  file:
-    path: /data/nginx-origin
-    state: directory
-    mode: 755
+- name: install origin server that used container on the Ubuntu OS.
+  include_tasks: based_container_on_ubuntu.yml
+  when: g_container == true and ansible_facts['distribution'] == "Ubuntu"
 
-- name: generate nginx.conf file
-  template:
-    src: nginx.conf.j2
-    dest: /data/nginx-origin/nginx.conf
+- name: install origin server that used package on the CentOS.
+  include_tasks: based_package_on_centos.yml
+  when: g_container == false and ansible_facts['distribution'] == "CentOS"
 
-- name: generate default.conf file
-  template:
-    src: nginx_default.conf.j2
-    dest: /data/nginx-origin/default.conf
+- name: install origin server that used package on the Ubuntu OS.
+  include_tasks: based_package_on_ubuntu.yml
+  when: g_container == false and ansible_facts['distribution'] == "Ubuntu"
 
-- name: deploy nginx for origin
-  community.docker.docker_container:
-    name: nginx-origin
-    image: nginx:1.21.4
-    ports:
-      - "{{ origin_listen_port }}:{{ origin_server_port }}"
-    volumes:
-      - /data/nginx-origin/nginx.conf:/etc/nginx/nginx.conf
-      - /data/nginx-origin/default.conf:/etc/nginx/conf.d/default.conf
-    restart_policy: always
-    state: started
-    restart: true
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
+- name: setup web page 
+  include_tasks: setup_web_page.yml
+  when: g_setup_webpage == true

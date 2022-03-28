@@ -17,6 +17,7 @@
     password_lock: yes
 
 - name: Download nginx_prometheus_exporter
+  delegate_to: localhost
   get_url:
     url: "{{ nginx_prometheus_exporter_download_url }}"
     dest: /tmp/nginx_prometheus_exporter.tar.gz

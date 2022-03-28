@@ -25,6 +25,7 @@
   unarchive:
     src: /tmp/node_exporter.tar.gz
     dest: /tmp/
+    remote_src: true
 
 - name: Create node_exporter directory
   file:
@@ -40,6 +41,7 @@
     mode: '0755'
     owner: "{{ node_exporter_user }}"
     group: "{{ node_exporter_grp }}"
+    remote_src: true
 
 - name: Generate node_exporter service
   template:

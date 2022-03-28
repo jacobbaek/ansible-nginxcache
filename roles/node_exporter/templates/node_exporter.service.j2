@@ -13,7 +13,7 @@ ExecStart={{ node_exporter_home }}/node_exporter \
     --collector.systemd \
     --collector.textfile \
     --collector.textfile.directory=/var/lib/node_exporter \
-    --web.listen-address={{ ansible_host }}:{{ node_exporter_port }}
+    --web.listen-address={{ internal_ip }}:{{ node_exporter_port }}
 
 SyslogIdentifier=node_exporter
 Restart=always
