@@ -7,7 +7,7 @@ After=network-online.target
 User=nginx_prometheus_exporter
 Group=nginx_prometheus_exporter
 Type=simple
-ExecStart={{ nginx_prometheus_exporter_home }}/nginx-prometheus-exporter -nginx.scrape-uri http://{{ internal_ip }}/metrics -web.telemetry-path=/
+ExecStart={{ nginx_prometheus_exporter_home }}/nginx-prometheus-exporter -nginx.scrape-uri http://{{ internal_ip }}/metrics -web.telemetry-path=/metrics
 
 [Install]
 WantedBy=multi-user.target
